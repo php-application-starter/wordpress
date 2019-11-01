@@ -1,0 +1,8 @@
+apache:
+  build: ./devops/dockerfiles/apache
+  container_name: wordpress-apache
+  volumes:
+    - ./devops/config/apache/etc/apache2/sites-enabled/:/etc/apache2/sites-enabled/
+    - ./devops/logs/apache/:/var/log/apache2
+  ports:
+    - ${APACHE_HOST_PORT}:${APACHE_CONTAINER_PORT}
