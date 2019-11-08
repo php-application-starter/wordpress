@@ -1,38 +1,46 @@
-apache:
-  build: ./devops/dockerfiles/apache
-  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}apache"
-  volumes:
-    - ./devops/config/apache/etc/apache2/sites-enabled/:/etc/apache2/sites-enabled/
-    - ./devops/logs/apache/:/var/log/apache2
-  ports:
-    - ${APACHE_HOST_PORT}:${APACHE_CONTAINER_PORT}
+version: "3"
 
-php-fpm:
-  build: ./devops/dockerfiles/php
-  working_dir: /var/www/html
-  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}php-fpm"
-  volumes:
-    - ./:/var/www/html
+services:
 
-mysql:
-  build: mysql:5.7
-  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
-  environment:
-    MYSQL_ROOT_PASSWORD: wordpress
-    MYSQL_DATABASE: wordpress
-    MYSQL_USER: wordpress
-    MYSQL_PASSWORD: wordpress
-  volumes:
-    - ./devops/volumes/data/mysql:/var/lib/mysql
-    - ./devops/volumes/:/var/log/mysql
-  ports:
-    - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_VOLUME}
+  apache:
+    build: ./devops/dockerfiles/apache
+    container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}apache"
+    volumes:
+      - ./devops/config/apache/etc/apache2/sites-enabled/:/etc/apache2/sites-enabled/
+      - ./devops/logs/apache/:/var/log/apache2
+    ports:
+      - ${APACHE_HOST_PORT}:${APACHE_CONTAINER_PORT}
 
-phpmyadmin:
-  image: phpmyadmin/phpmyadmin
-  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}phpmyadmin"
-  environment:
-    PMA_HOST: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
-    PMA_PORT: 3306
-  ports:
-    - ${PHPMYADMIN_HOST_PORT}:${PHPMYADMIN_CONTAINER_PORT}
+  php-fpm:
+    build: ./devops/dockerfiles/php
+    working_dir: /var/www/html
+    container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}php-fpm"
+    volumes:
+      - ./:/var/www/html
+
+  mysql:
+    image: mysql:5.7
+    container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
+    environment:
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    volumes:
+      - ./devops/volumes/data/mysql:/var/lib/mysql
+      - ./devops/volumes/:/var/log/mysql
+    ports:
+      - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_VOLUME}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}phpmyadmin"
+    environment:
+      PMA_HOST: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: wordpress
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    ports:
+      - ${PHPMYADMIN_HOST_PORT}:${PHPMYADMIN_CONTAINER_PORT}
