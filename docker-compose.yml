@@ -1,8 +1,15 @@
 apache:
   build: ./devops/dockerfiles/apache
-  container_name: wordpress-apache
+  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}apache"
   volumes:
     - ./devops/config/apache/etc/apache2/sites-enabled/:/etc/apache2/sites-enabled/
     - ./devops/logs/apache/:/var/log/apache2
   ports:
     - ${APACHE_HOST_PORT}:${APACHE_CONTAINER_PORT}
+
+php-fpm:
+  build: ./devops/dockerfiles/php
+  working_dir: /var/www/html
+  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}php-fpm"
+  volumes:
+    - ./:/var/www/html
