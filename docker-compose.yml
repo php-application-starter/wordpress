@@ -13,3 +13,26 @@ php-fpm:
   container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}php-fpm"
   volumes:
     - ./:/var/www/html
+
+mysql:
+  build: mysql:5.7
+  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
+  environment:
+    MYSQL_ROOT_PASSWORD: wordpress
+    MYSQL_DATABASE: wordpress
+    MYSQL_USER: wordpress
+    MYSQL_PASSWORD: wordpress
+  volumes:
+    - ./devops/volumes/data/mysql:/var/lib/mysql
+    - ./devops/volumes/:/var/log/mysql
+  ports:
+    - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_VOLUME}
+
+phpmyadmin:
+  image: phpmyadmin/phpmyadmin
+  container_name: "${PROJECT_NAME}${PROJECT_SEPARATOR}phpmyadmin"
+  environment:
+    PMA_HOST: "${PROJECT_NAME}${PROJECT_SEPARATOR}mysql"
+    PMA_PORT: 3306
+  ports:
+    - ${PHPMYADMIN_HOST_PORT}:${PHPMYADMIN_CONTAINER_PORT}
